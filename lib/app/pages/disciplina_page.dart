@@ -23,14 +23,7 @@ class _DisciplinaPageState extends State<DisciplinaPage> {
         title: Text('Disciplinas'),
         backgroundColor: Colors.deepPurple[700],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        label: const Text('Adicionar'),
-        icon: const Icon(Icons.add),
-        backgroundColor: Colors.deepPurple[700],
-      ),
+      floatingActionButton: getFloatButton(),
       body: SingleChildScrollView(
         child: Container(
           child: Column(
@@ -158,5 +151,16 @@ class _DisciplinaPageState extends State<DisciplinaPage> {
         ),
       ),
     );
+  }
+
+  getFloatButton(){
+    return FloatingActionButton.extended(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        label: const Text('Adicionar'),
+        icon: const Icon(Icons.add),
+        backgroundColor: Colors.deepPurple[700],
+      );
   }
 }
