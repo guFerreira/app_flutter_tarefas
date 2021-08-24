@@ -3,6 +3,7 @@ import 'package:app_flutter_tarefas/app/pages/form_disciplina_page.dart';
 import 'package:app_flutter_tarefas/app/pages/home_page.dart';
 import 'package:app_flutter_tarefas/app/pages/login_page.dart';
 import 'package:app_flutter_tarefas/app/pages/tarefa_page.dart';
+import 'package:app_flutter_tarefas/app/pages/tarefas_concluidas_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,13 +13,19 @@ class Aplicativo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/tarefa',
+      initialRoute: '/tarefaConcluida',
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        /* dark theme settings */
+      ),
+      themeMode: ThemeMode.dark,
       routes: {
         '/': (context) =>LoginPage(),
         '/home': (context) => HomePage(),
         '/disciplina': (context) => DisciplinaPage(),
         '/formDisciplina': (context) => FormDisciplina(),
         '/tarefa': (context) => TarefaPage(),
+        '/tarefaConcluida': (context) => TarefaConcluidaPage(),
       },
     );
   }
