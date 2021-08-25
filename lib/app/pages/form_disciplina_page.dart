@@ -1,11 +1,41 @@
+import 'package:app_flutter_tarefas/app/controllers/disciplina_controller.dart';
+import 'package:app_flutter_tarefas/app/models/disciplina_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class FormDisciplina extends StatelessWidget {
-  const FormDisciplina({Key? key}) : super(key: key);
+class FormDisciplinaPage extends StatefulWidget {
+  FormDisciplinaPage({Key? key}) : super(key: key);
+
+  @override
+  _FormDisciplinaPageState createState() => _FormDisciplinaPageState();
+}
+
+class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
+  final _form = GlobalKey<FormState>();
+
+  String? _nome, _descricao;
+
+  bool atualizar = false;
+  int? indexAtualizar;
+
+  _carregarDadosDisciplina(context) {
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      Map data = ModalRoute.of(context)!.settings.arguments as Map;
+      Disciplina d = data['disciplina'];
+      int i = data['index'];
+
+      _nome = d.nome;
+      _descricao = d.descricao;
+      indexAtualizar = i;
+      atualizar = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    _carregarDadosDisciplina(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Formulário Disciplina'),
@@ -26,92 +56,140 @@ class FormDisciplina extends StatelessWidget {
                 left: 30,
                 right: 30,
               ),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Nome',
-                      style: TextStyle(
-                          color: Colors.deepPurple[700], fontSize: 26),
+              child: Form(
+                key: _form,
+                child: Column(
+                  children: [
+                    getTextNome(),
+                    getTextFieldNome(),
+                    SizedBox(
+                      height: 16,
                     ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Digite o nome da disciplina',
-                      filled: true,
-                      fillColor: Colors.white,
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.deepPurple,
-                          width: 3.0,
-                        ),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.purple,
-                          width: 3.0,
-                        ),
-                      ),
+                    getTextDescricao(),
+                    getTextFieldDescricao(),
+                    SizedBox(
+                      height: 15,
                     ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Descrição',
-                      style: TextStyle(
-                          color: Colors.deepPurple[700], fontSize: 26),
-                    ),
-                  ),
-                  TextField(
-                    minLines: 2,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      hintText: 'Digite a descrição da disciplina',
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.deepPurple,
-                          width: 3.0,
-                        ),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.purple,
-                          width: 3.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    width: 200,
-                    height: 45,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Criar',
-                        style: TextStyle(
-                          fontSize: 22,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.deepPurple[700],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                    getBotaoSalvar(context),
+                  ],
+                ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  getTextNome() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        'Nome',
+        style: TextStyle(color: Colors.deepPurple[700], fontSize: 26),
+      ),
+    );
+  }
+
+  getTextFieldNome() {
+    return TextFormField(
+      initialValue: _nome,
+      style: TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        hintText: 'Digite o nome da disciplina',
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: const OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.deepPurple,
+            width: 3.0,
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.purple,
+            width: 3.0,
+          ),
+        ),
+      ),
+      onChanged: (value) {
+        this._nome = value;
+      },
+    );
+  }
+
+  getTextDescricao() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        'Descrição',
+        style: TextStyle(color: Colors.deepPurple[700], fontSize: 26),
+      ),
+    );
+  }
+
+  getTextFieldDescricao() {
+    return TextFormField(
+      initialValue: _descricao,
+      minLines: 2,
+      maxLines: 5,
+      style: TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintText: 'Digite a descrição da disciplina',
+        enabledBorder: const OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.deepPurple,
+            width: 3.0,
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.purple,
+            width: 3.0,
+          ),
+        ),
+      ),
+      onChanged: (value) {
+        this._descricao = value;
+      },
+    );
+  }
+
+  getBotaoSalvar(context) {
+    String nomeBotao = 'Criar';
+    if (atualizar == true) {
+      nomeBotao = 'Atualizar';
+    }
+
+    return SizedBox(
+      width: 200,
+      height: 45,
+      child: ElevatedButton(
+        onPressed: () {
+          _form.currentState!.save();
+          DisciplinaController dc =
+              Provider.of<DisciplinaController>(context, listen: false);
+
+          if (atualizar == true) {
+            dc.atualizarDisciplina(indexAtualizar!, _nome!, _descricao!);
+          } else {
+            dc.adicionarDisciplina(_nome!, _descricao!);
+          }
+          Navigator.of(context).pop();
+          dc.notifyListeners();
+        },
+        child: Text(
+          nomeBotao,
+          style: TextStyle(
+            fontSize: 22,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.deepPurple[700],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
           ),
         ),
       ),
