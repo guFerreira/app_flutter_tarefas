@@ -60,17 +60,17 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
                 key: _form,
                 child: Column(
                   children: [
-                    getTextNome(),
-                    getTextFieldNome(),
+                    _getTextNome(),
+                    _getTextFieldNome(),
                     SizedBox(
                       height: 16,
                     ),
-                    getTextDescricao(),
-                    getTextFieldDescricao(),
+                    _getTextDescricao(),
+                    _getTextFieldDescricao(),
                     SizedBox(
                       height: 15,
                     ),
-                    getBotaoSalvar(context),
+                    _getBotaoSalvar(context),
                   ],
                 ),
               ),
@@ -81,7 +81,7 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
     );
   }
 
-  getTextNome() {
+  _getTextNome() {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -91,26 +91,32 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
     );
   }
 
-  getTextFieldNome() {
+  _getInputDecoration(String hintText) {
+    return InputDecoration(
+      hintText: hintText,
+      filled: true,
+      fillColor: Colors.white,
+      enabledBorder: const OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: Colors.deepPurple,
+          width: 3.0,
+        ),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: Colors.purple,
+          width: 3.0,
+        ),
+      ),
+    );
+  }
+
+  _getTextFieldNome() {
     return TextFormField(
       initialValue: _nome,
       style: TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        hintText: 'Digite o nome da disciplina',
-        filled: true,
-        fillColor: Colors.white,
-        enabledBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.deepPurple,
-            width: 3.0,
-          ),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.purple,
-            width: 3.0,
-          ),
-        ),
+      decoration: _getInputDecoration(
+        'Digite o nome da disciplina',
       ),
       onChanged: (value) {
         this._nome = value;
@@ -118,7 +124,7 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
     );
   }
 
-  getTextDescricao() {
+  _getTextDescricao() {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -128,36 +134,21 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
     );
   }
 
-  getTextFieldDescricao() {
+  _getTextFieldDescricao() {
     return TextFormField(
       initialValue: _descricao,
       minLines: 2,
       maxLines: 5,
       style: TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: 'Digite a descrição da disciplina',
-        enabledBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.deepPurple,
-            width: 3.0,
-          ),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.purple,
-            width: 3.0,
-          ),
-        ),
-      ),
+      decoration:
+          _getInputDecoration('Digite a descrição da disciplina'),
       onChanged: (value) {
         this._descricao = value;
       },
     );
   }
 
-  getBotaoSalvar(context) {
+  _getBotaoSalvar(context) {
     String nomeBotao = 'Criar';
     if (atualizar == true) {
       nomeBotao = 'Atualizar';
