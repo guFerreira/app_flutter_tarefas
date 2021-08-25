@@ -1,3 +1,4 @@
+import 'package:app_flutter_tarefas/app/components/botao_circular.dart';
 import 'package:app_flutter_tarefas/app/controllers/disciplina_controller.dart';
 import 'package:app_flutter_tarefas/app/models/disciplina_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,42 +77,34 @@ class _DisciplinaTileState extends State<DisciplinaTile> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    getCircularBotao(Icons.edit, () {
-                      Navigator.of(context).pushNamed(
-                        '/formDisciplina',
-                        arguments: {
-                          'disciplina': widget.disciplina,
-                          'index': widget.index
-                        },
-                      );
-                    }),
+                    BotaoCircular(
+                      icon: Icons.edit,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                          '/formDisciplina',
+                          arguments: {
+                            'disciplina': widget.disciplina,
+                            'index': widget.index
+                          },
+                        );
+                      },
+                    ),
                     SizedBox(width: 10),
-                    getCircularBotao(Icons.delete, () {
-                      setState(() {
-                        dc.excluirDisciplina(widget.index!);
-                        dc.notifyListeners();
-                      });
-                    }),
+                    BotaoCircular(
+                      icon: Icons.delete,
+                      onPressed: () {
+                        setState(() {
+                          dc.excluirDisciplina(widget.index!);
+                          dc.notifyListeners();
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  getCircularBotao(IconData icon, void Function() onPressed) {
-    return Ink(
-      decoration: const ShapeDecoration(
-        color: Colors.deepPurple,
-        shape: CircleBorder(),
-      ),
-      child: IconButton(
-        icon: Icon(icon),
-        color: Colors.white,
-        onPressed: onPressed,
       ),
     );
   }
