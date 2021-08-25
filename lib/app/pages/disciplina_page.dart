@@ -1,21 +1,17 @@
-import 'package:app_flutter_tarefas/app/models/disciplina_model.dart';
+import 'package:app_flutter_tarefas/app/components/disciplina_tile.dart';
+import 'package:app_flutter_tarefas/app/controllers/disciplina_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DisciplinaPage extends StatefulWidget {
   DisciplinaPage({Key? key}) : super(key: key);
-
+  
   @override
   _DisciplinaPageState createState() => _DisciplinaPageState();
 }
 
 class _DisciplinaPageState extends State<DisciplinaPage> {
-  late List<Disciplina> disciplinas = [
-    Disciplina('RP 2', 'Disciplina para aprender sobre testes de software'),
-    Disciplina('POO',
-        'Disciplina para aprender sobre o paradigma de programação orientado a objetos.'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,144 +19,79 @@ class _DisciplinaPageState extends State<DisciplinaPage> {
         title: Text('Disciplinas'),
         backgroundColor: Colors.deepPurple[700],
       ),
-      floatingActionButton: getFloatButton(),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 30,
-                  bottom: 10,
-                ),
-                child: Center(
-                  child: Container(
-                    width: 300,
-                    child: Text(
-                      'Você possui ${disciplinas.length} Disciplinas cadastradas',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+      floatingActionButton: _getFloatButton(context),
+      body: Consumer<DisciplinaController>(
+        builder: (context, disciplinaController, widget) {
+          return SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: [
+                  _getContadorDisciplinas(),
+                  _getListViewDisciplinas(),
+                  SizedBox(
+                    height: 60,
                   ),
-                ),
+                ],
               ),
-              ListView.builder(
-                itemCount: disciplinas.length,
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      left: 40,
-                      right: 40,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: Container(
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        color: Colors.purple[100],
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20, left: 20),
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  disciplinas[index].nome,
-                                  style: TextStyle(
-                                    color: Colors.deepPurple[700],
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 12,
-                                left: 10,
-                                right: 10,
-                                bottom: 20,
-                              ),
-                              child: Wrap(
-                                children: [
-                                  Wrap(
-                                    children: [
-                                      Text(
-                                        disciplinas[index].descricao,
-                                        style: TextStyle(
-                                          color: Colors.deepPurple[600],
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 6, right: 6),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Ink(
-                                    decoration: const ShapeDecoration(
-                                      color: Colors.deepPurple,
-                                      shape: CircleBorder(),
-                                    ),
-                                    child: IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      color: Colors.white,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Ink(
-                                    decoration: const ShapeDecoration(
-                                      color: Colors.deepPurple,
-                                      shape: CircleBorder(),
-                                    ),
-                                    child: IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      color: Colors.white,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(
-                height: 60,
-              ),
-            ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  _getContadorDisciplinas() {
+    DisciplinaController dc = Provider.of<DisciplinaController>(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 30,
+        bottom: 10,
+      ),
+      child: Center(
+        child: Container(
+          width: 300,
+          child: Text(
+            'Você possui ${dc.getDisciplinasLenght()} Disciplinas cadastradas',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
           ),
         ),
       ),
     );
   }
 
-  getFloatButton(){
+  _getListViewDisciplinas() {
+    DisciplinaController dc = Provider.of<DisciplinaController>(context);
+
+    return ListView.builder(
+      itemCount: dc.disciplinas.length,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return DisciplinaTile(
+          disciplina: dc.getDisciplinaByIndex(index),
+          index: index,
+        );
+      },
+    );
+  }
+
+  _getFloatButton(context) {
     return FloatingActionButton.extended(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        label: const Text('Adicionar'),
-        icon: const Icon(Icons.add),
-        backgroundColor: Colors.deepPurple[700],
-      );
+      onPressed: () {
+        _irParaAdicionarDisciplina(context);
+      },
+      label: const Text('Adicionar'),
+      icon: const Icon(Icons.add),
+      backgroundColor: Colors.deepPurple[700],
+    );
+  }
+
+  _irParaAdicionarDisciplina(context) {
+    Navigator.pushNamed(context, '/formDisciplina');
   }
 }
