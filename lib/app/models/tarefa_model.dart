@@ -1,33 +1,69 @@
+import 'dart:convert';
+
+import 'package:app_flutter_tarefas/app/models/disciplina_model.dart';
 
 class Tarefa {
-  late String _descricao;
-  late DateTime _dataEntrega;
-  late bool _isConcluida;
+  late int id;
+  late String descricao;
+  late DateTime dataEntrega;
+  late bool isConcluida;
+  late Disciplina disciplina;
 
-  Tarefa(
-      this._descricao, this._dataEntrega,this._isConcluida);
+  Tarefa({
+    required this.id,
+    required this.descricao,
+    required this.dataEntrega,
+    required this.isConcluida,
+    required this.disciplina,
+  });
 
-  String getDescricao() {
-    return this._descricao;
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'descricao': descricao,
+      'dataEntrega': dataEntrega,
+      'isConcluida': isConcluida,
+      'disciplina': disciplina.toMap(),
+    };
   }
 
-  void setDescricao(value) {
-    this._descricao = value;
+  factory Tarefa.fromMap(Map<String, dynamic> map) {
+    return Tarefa(
+      id: map['id'],
+      descricao: map['descricao'],
+      dataEntrega: map['dataEntrega'],
+      isConcluida: map['isConcluida'],
+      disciplina: Disciplina.fromMap(map['disciplina']),
+    );
   }
 
-  DateTime getDataEntrega() {
-    return this._dataEntrega;
+  String toJson() => json.encode(toMap());
+
+  factory Tarefa.fromJson(String source) => Tarefa.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'Tarefa(id: $id, descricao: $descricao, dataEntrega: $dataEntrega, isConcluida: $isConcluida, disciplina: $disciplina)';
   }
 
-  void setDataEntrega(value) {
-    this._dataEntrega = value;
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Tarefa &&
+        other.id == id &&
+        other.descricao == descricao &&
+        other.dataEntrega == dataEntrega &&
+        other.isConcluida == isConcluida &&
+        other.disciplina == disciplina;
   }
 
-  bool getIsConcluida() {
-    return this._isConcluida;
-  }
-
-  void setIsConcluida(value) {
-    this._isConcluida = value;
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        descricao.hashCode ^
+        dataEntrega.hashCode ^
+        isConcluida.hashCode ^
+        disciplina.hashCode;
   }
 }

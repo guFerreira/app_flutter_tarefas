@@ -1,21 +1,51 @@
-import 'package:app_flutter_tarefas/app/models/tarefa_model.dart';
+import 'dart:convert';
 
 class Disciplina {
-  late String _nome;
-  late String _descricao;
-  late List<Tarefa> _tarefas;
+  late int id;
+  late String nome;
+  late String descricao;
 
-  Disciplina(this._nome, this._descricao, this._tarefas);
+  Disciplina({
+    required this.id,
+    required this.nome,
+    required this.descricao,
+  });
 
-  get nome => this._nome;
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'nome': nome,
+      'descricao': descricao,
+    };
+  }
 
-  set nome(value) => this._nome = value;
+  factory Disciplina.fromMap(Map<String, dynamic> map) {
+    return Disciplina(
+      id: map['id'],
+      nome: map['nome'],
+      descricao: map['descricao'],
+    );
+  }
 
-  get descricao => this._descricao;
+  String toJson() => json.encode(toMap());
 
-  set descricao(value) => this._descricao = value;
+  factory Disciplina.fromJson(String source) =>
+      Disciplina.fromMap(json.decode(source));
 
-  get tarefas => this._tarefas;
+  @override
+  String toString() =>
+      'Disciplina(id: $id, nome: $nome, descricao: $descricao)';
 
-  set tarefas(value) => this._tarefas = value;
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Disciplina &&
+        other.id == id &&
+        other.nome == nome &&
+        other.descricao == descricao;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ nome.hashCode ^ descricao.hashCode;
 }
