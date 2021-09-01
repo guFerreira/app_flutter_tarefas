@@ -10,18 +10,20 @@ class FormTarefaPage extends StatelessWidget {
   final tarefaFormController = Get.put(TarefaFormController());
   final tarefaController = Get.put(TarefaController());
 
+  bool _atualizar = false;
   _carregarDadosDisciplina(context) {
     if (ModalRoute.of(context)!.settings.arguments != null) {
       Map data = ModalRoute.of(context)!.settings.arguments as Map;
       tarefaFormController.tarefa.value = data['tarefa'];
-      tarefaFormController.atualizarDadosCampos();
+      _atualizar = true;
+      tarefaFormController.atualizarDadosCampos(_atualizar);
+    } else {
+      tarefaFormController.initAdicionarTarefa();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    tarefaController.update();
-    tarefaFormController.update();
     _carregarDadosDisciplina(context);
     return Scaffold(
       appBar: AppBar(
@@ -211,26 +213,18 @@ class FormTarefaPage extends StatelessWidget {
         onPressed: () {
           tarefaFormController.atualizarDadosTarefa();
           if (tarefaFormController.atualizar.value == true) {
-            tarefaController
-                .atualizarTarefas(tarefaFormController.tarefa.value);
+            Tarefa t = tarefaFormController.tarefa.value;
+            tarefaController.atualizarTarefas(t);
             tarefaFormController.atualizar.value = false;
-            tarefaFormController.refresh();
           } else {
             Tarefa t = tarefaFormController.tarefa.value;
             tarefaController.adicionarTarefas(t);
-
-            tarefaFormController.formKey.currentState!.reset();
-            //tarefaFormController.selectedDate.value = DateTime.now();
             tarefaFormController.atualizar.value = false;
-            tarefaFormController.refresh();
             tarefaController.refresh();
           }
-
-          tarefaFormController.reiniciarTarefa();
           tarefaFormController.refresh();
           tarefaController.refresh();
           Navigator.of(context).pop();
-          //Get.off(TarefaPage());
         },
         child: Text(
           'Salvar',

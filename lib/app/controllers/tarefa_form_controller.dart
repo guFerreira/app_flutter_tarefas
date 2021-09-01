@@ -35,9 +35,15 @@ class TarefaFormController extends GetxController {
             isConcluida: false,
             disciplina: Disciplina(id: -1, descricao: '', nome: ''))
         .obs;
+  }
 
+  initAdicionarTarefa() {
+    reiniciarTarefa();
     atualizar.value = false;
-    atualizar.refresh();
+    entrega = TextEditingController();
+    descricao = TextEditingController();
+    selectedDate = DateTime.now().obs;
+    this.refresh();
   }
 
   @override
@@ -46,8 +52,8 @@ class TarefaFormController extends GetxController {
     super.onInit();
   }
 
-  atualizarDadosCampos() {
-    if (this.tarefa.value.id != null || this.tarefa.value.id > 0) {
+  atualizarDadosCampos(bool atualizar) {
+    if (atualizar == true) {
       this.atualizar.value = true;
       this.descricao.text = this.tarefa.value.descricao;
       this.entrega.text = this.tarefa.value.dataEntrega.day.toString() +
@@ -57,13 +63,16 @@ class TarefaFormController extends GetxController {
           this.tarefa.value.dataEntrega.year.toString();
       this.disciplinaSelecionada.value = this.tarefa.value.disciplina;
       this.disciplinaSelecionada.refresh();
+      this.selectedDate.value = this.tarefa.value.dataEntrega;
 
       //formKey.currentState!.reset();
     } else {
       this.atualizar.value = false;
       this.descricao.text = '';
       this.entrega.text = '';
+      this.selectedDate.value = DateTime.now();
       this.disciplinaSelecionada.value = this.disciplinas.first;
+      this.atualizarDadosTarefa();
       this.refresh();
     }
   }
