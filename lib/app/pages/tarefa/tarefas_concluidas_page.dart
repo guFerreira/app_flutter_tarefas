@@ -1,19 +1,14 @@
-import 'package:app_flutter_tarefas/app/components/botao_circular.dart';
-import 'package:app_flutter_tarefas/app/components/texts_info_tarefas.dart';
-import 'package:app_flutter_tarefas/app/controllers/disciplina_controller.dart';
+import 'package:app_flutter_tarefas/app/controllers/tarefa_controller.dart';
 import 'package:app_flutter_tarefas/app/models/tarefa_model.dart';
+import 'package:app_flutter_tarefas/app/pages/components/botao_circular.dart';
+import 'package:app_flutter_tarefas/app/pages/components/texts_info_tarefas.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
-class TarefaConcluidaPage extends StatefulWidget {
-  TarefaConcluidaPage({Key? key}) : super(key: key);
+class TarefaConcluidaPage extends StatelessWidget {
+  final tarefaController = Get.put(TarefaController());
 
-  @override
-  _TarefaConcluidaPageState createState() => _TarefaConcluidaPageState();
-}
-
-class _TarefaConcluidaPageState extends State<TarefaConcluidaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,43 +34,46 @@ class _TarefaConcluidaPageState extends State<TarefaConcluidaPage> {
   }
 
   _getListViewBuilder() {
-    DisciplinaController dc =
-        Provider.of<DisciplinaController>(context, listen: false);
-    return ListView.builder(
-      itemCount: dc.getTarefasConcluidas().length,
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.only(
-            left: 40,
-            right: 40,
-            top: 10,
-            bottom: 10,
-          ),
-          child: Container(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+    return GetX<TarefaController>(
+      builder: (controller) {
+        return ListView.builder(
+          itemCount: controller.tarefasConcluidas.length,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                left: 40,
+                right: 40,
+                top: 10,
+                bottom: 10,
               ),
-              color: Colors.purple[100],
-              child: Column(
-                children: [
-                  TextInfoTarefa(
-                    tarefa: dc.getTarefasConcluidas().elementAt(index),
+              child: Container(
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  _getTextConcluida(),
-                  _getButtonsCardTarefa(
-                    dc.getTarefasConcluidas().elementAt(index),
+                  color: Colors.purple[100],
+                  child: Column(
+                    children: [
+                      TextInfoTarefa(
+                        tarefa: controller.tarefasConcluidas[index],
+                      ),
+                      _getTextConcluida(),
+                      _getButtonsCardTarefa(
+                        controller.tarefasConcluidas[index],
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
   }
+
   _getTextConcluida() {
     return Padding(
       padding: const EdgeInsets.only(top: 20, left: 20),
@@ -116,12 +114,7 @@ class _TarefaConcluidaPageState extends State<TarefaConcluidaPage> {
           BotaoCircular(
             icon: Icons.delete,
             onPressed: () {
-              setState(() {
-                DisciplinaController dc =
-                    Provider.of<DisciplinaController>(context, listen: false);
-                dc.excluirTarefa(tarefa);
-                dc.notifyListeners();
-              });
+              tarefaController.excluirTarefas(tarefa);
             },
           ),
         ],

@@ -1,24 +1,24 @@
-import 'package:app_flutter_tarefas/app/components/botao_circular.dart';
-import 'package:app_flutter_tarefas/app/controllers/disciplina_controller.dart';
-import 'package:app_flutter_tarefas/app/models/disciplina_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
-class DisciplinaTile extends StatefulWidget {
+import 'package:app_flutter_tarefas/app/controllers/disciplina_controller.dart';
+import 'package:app_flutter_tarefas/app/models/disciplina_model.dart';
+import 'package:app_flutter_tarefas/app/pages/components/botao_circular.dart';
+
+class DisciplinaTile extends StatelessWidget {
+  var disciplinaController = Get.put(DisciplinaController());
+
   late Disciplina? disciplina;
   late int? index;
-  DisciplinaTile({Key? key, this.disciplina, this.index}) : super(key: key);
+  DisciplinaTile({
+    Key? key,
+    this.disciplina,
+    this.index,
+  }) : super(key: key);
 
-  @override
-  _DisciplinaTileState createState() => _DisciplinaTileState();
-}
-
-class _DisciplinaTileState extends State<DisciplinaTile> {
   @override
   Widget build(BuildContext context) {
-    DisciplinaController dc =
-        Provider.of<DisciplinaController>(context, listen: true);
     return Padding(
       padding: const EdgeInsets.only(
         left: 40,
@@ -39,7 +39,7 @@ class _DisciplinaTileState extends State<DisciplinaTile> {
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    widget.disciplina!.nome,
+                    disciplina!.nome,
                     style: TextStyle(
                       color: Colors.deepPurple[700],
                       fontSize: 24,
@@ -60,7 +60,7 @@ class _DisciplinaTileState extends State<DisciplinaTile> {
                     Wrap(
                       children: [
                         Text(
-                          widget.disciplina!.descricao,
+                          disciplina!.descricao,
                           style: TextStyle(
                             color: Colors.deepPurple[600],
                             fontSize: 14,
@@ -83,8 +83,7 @@ class _DisciplinaTileState extends State<DisciplinaTile> {
                         Navigator.of(context).pushNamed(
                           '/formDisciplina',
                           arguments: {
-                            'disciplina': widget.disciplina,
-                            'index': widget.index
+                            'disciplina': disciplina,
                           },
                         );
                       },
@@ -93,10 +92,7 @@ class _DisciplinaTileState extends State<DisciplinaTile> {
                     BotaoCircular(
                       icon: Icons.delete,
                       onPressed: () {
-                        setState(() {
-                          dc.excluirDisciplina(widget.index!);
-                          dc.notifyListeners();
-                        });
+                        disciplinaController.excluirDisciplina(disciplina!);
                       },
                     ),
                   ],

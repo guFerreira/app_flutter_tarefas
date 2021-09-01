@@ -2,33 +2,24 @@ import 'package:app_flutter_tarefas/app/controllers/disciplina_controller.dart';
 import 'package:app_flutter_tarefas/app/models/disciplina_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
-class FormDisciplinaPage extends StatefulWidget {
-  FormDisciplinaPage({Key? key}) : super(key: key);
-
-  @override
-  _FormDisciplinaPageState createState() => _FormDisciplinaPageState();
-}
-
-class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
+class FormDisciplinaPage extends StatelessWidget {
+  final disciplinaController = Get.put(DisciplinaController());
   final _form = GlobalKey<FormState>();
 
+  Disciplina? disciplina;
   String? _nome, _descricao;
-
-  bool atualizar = false;
-  int? indexAtualizar;
+  bool _atualizar = false;
 
   _carregarDadosDisciplina(context) {
     if (ModalRoute.of(context)!.settings.arguments != null) {
       Map data = ModalRoute.of(context)!.settings.arguments as Map;
-      Disciplina d = data['disciplina'];
-      int i = data['index'];
+      disciplina = data['disciplina'];
 
-      _nome = d.nome;
-      _descricao = d.descricao;
-      indexAtualizar = i;
-      atualizar = true;
+      _nome = disciplina!.nome;
+      _descricao = disciplina!.descricao;
+      _atualizar = true;
     }
   }
 
@@ -119,7 +110,7 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
         'Digite o nome da disciplina',
       ),
       onChanged: (value) {
-        this._nome = value;
+        _nome = value;
       },
     );
   }
@@ -140,17 +131,16 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
       minLines: 2,
       maxLines: 5,
       style: TextStyle(color: Colors.black),
-      decoration:
-          _getInputDecoration('Digite a descrição da disciplina'),
+      decoration: _getInputDecoration('Digite a descrição da disciplina'),
       onChanged: (value) {
-        this._descricao = value;
+        _descricao = value;
       },
     );
   }
 
   _getBotaoSalvar(context) {
     String nomeBotao = 'Criar';
-    if (atualizar == true) {
+    if (_atualizar == true) {
       nomeBotao = 'Atualizar';
     }
 
@@ -160,16 +150,19 @@ class _FormDisciplinaPageState extends State<FormDisciplinaPage> {
       child: ElevatedButton(
         onPressed: () {
           _form.currentState!.save();
-          DisciplinaController dc =
-              Provider.of<DisciplinaController>(context, listen: false);
 
-          if (atualizar == true) {
-            dc.atualizarDisciplina(indexAtualizar!, _nome!, _descricao!);
+          if (_atualizar == true) {
+            print("atualizar");
+            print(disciplina!.id);
+            disciplina!.nome = _nome!;
+            disciplina!.descricao = _descricao!;
+            disciplinaController.atualizarDisciplina(disciplina!);
           } else {
-            dc.adicionarDisciplina(_nome!, _descricao!);
+            disciplina =
+                Disciplina(id: -1, nome: _nome!, descricao: _descricao!);
+            disciplinaController.adicionarDisciplina(disciplina!);
           }
           Navigator.of(context).pop();
-          dc.notifyListeners();
         },
         child: Text(
           nomeBotao,

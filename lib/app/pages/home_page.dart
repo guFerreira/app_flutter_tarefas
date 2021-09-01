@@ -1,4 +1,4 @@
-import 'package:app_flutter_tarefas/app/components/card_menu_info.dart';
+import 'package:app_flutter_tarefas/app/pages/components/card_menu_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
